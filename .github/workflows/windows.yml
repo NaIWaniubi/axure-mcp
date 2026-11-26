@@ -1,0 +1,62 @@
+name: Windows CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build bridge and verify MCP tools
+    runs-on: windows-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build C# bridge
+        run: dotnet build bridge/bridge.csproj -c Release --nologo
+
+      - name: Verify bridge artifact
+        shell: pwsh
+        run: |
+          $exe = "bridge/bin/Release/net48/axure-bridge.exe"
+          if (-not (Test-Path $exe)) { throw "Missing bridge artifact: $exe" }
+          Get-Item $exe | Format-List Name,Length,LastWriteTime
+
+      - name: Python syntax check
+        run: python -m py_compile server.py axure_core.py selfcheck.py selfcheck_code.py selfcheck_ci.py demo/build_workspace.py demo/build_advanced_widgets.py demo/build_full_feature_demo.py
+
+      - name: MCP tool registration check
+        run: python selfcheck_ci.py
+
+      - name: Upload bridge artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: axure-bridge-win-x86
+          path: |
+            bridge/bin/Release/net48/axure-bridge.exe
+            bridge/bin/Release/net48/axure-bridge.exe.config
+          if-no-files-found: error
+          retention-days: 14
