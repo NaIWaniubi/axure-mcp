@@ -36,7 +36,17 @@ dotnet build -c Debug
 echo '{"cmd":"project-info","path":"<某个 .rp 路径>"}' | bridge/bin/Debug/net48/axure-bridge.exe
 ```
 
-### 1.4 注册 MCP
+### 1.5 自检
+
+```bash
+python selfcheck_ci.py     # 不需要 Axure：验证 91 个 MCP 工具注册
+python selfcheck_code.py   # 需要 Axure：完整对象模型回归
+python selfcheck.py        # 需要 Axure：GUI 兜底回归
+```
+
+CI 使用 `selfcheck_ci.py`，因为 GitHub 托管 runner 不安装 Axure。
+
+### 1.6 注册 MCP
 
 ZCode (`~/.zcode/cli/config.json`)、Claude Desktop (`claude_desktop_config.json`) 或任意 MCP 客户端：
 
