@@ -1,4 +1,4 @@
-uiautomation
-mcp
-pillow
-opencv-python
+uiautomation>=2.0.18
+mcp>=1.0,<2
+pillow>=10.0
+opencv-python>=4.8
