@@ -1,0 +1,45 @@
+# Build output
+bin/
+obj/
+*.pdb
+*.user
+*.suo
+.vs/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local secrets / runtime state
+*.log
+.env
+.env.*
+shots/
+*.rp.bak
+
+# Axure install / decompiled proprietary sources
+re/
+**/AxureRP9*
+Axure*.dll
+*.rpk
+
+# Generated demo artifacts (rebuild with demo/build_*.py)
+demo/*_html/
+demo/html/
+demo/exports/
+demo/full_feature_exports/
+demo/*.rp
+
+# OS / editor
+Thumbs.db
+desktop.ini
+.DS_Store
+.idea/
+.vscode/
+NVIDIA Corporation/
+
+# Local reverse-engineering / debug scratch scripts
+tools/dev/

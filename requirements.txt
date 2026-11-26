@@ -1,0 +1,4 @@
+uiautomation
+mcp
+pillow
+opencv-python
