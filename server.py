@@ -8,6 +8,7 @@ import threading
 import time
 import traceback
 import json
+import os
 import subprocess
 
 # --- 专用 UIA worker 线程（COM 初始化一次，跨调用复用） ---------------------
@@ -44,9 +45,22 @@ from mcp.server.fastmcp import FastMCP  # noqa: E402
 
 mcp = FastMCP("axure")
 
-OUT_DIR = r"E:\myzcode\axure-mcp\shots"
-CODE_BRIDGE = r"E:\myzcode\axure-mcp\bridge\bin\Debug\net48\axure-bridge.exe"
-import os
+ROOT = os.path.dirname(os.path.abspath(__file__))
+OUT_DIR = os.environ.get("AXURE_MCP_OUT_DIR", os.path.join(ROOT, "shots"))
+
+
+def _find_bridge() -> str:
+    override = os.environ.get("AXURE_MCP_BRIDGE")
+    if override:
+        return override
+    for config in ("Release", "Debug"):
+        candidate = os.path.join(ROOT, "bridge", "bin", config, "net48", "axure-bridge.exe")
+        if os.path.exists(candidate):
+            return candidate
+    return os.path.join(ROOT, "bridge", "bin", "Debug", "net48", "axure-bridge.exe")
+
+
+CODE_BRIDGE = _find_bridge()
 os.makedirs(OUT_DIR, exist_ok=True)
 
 
